@@ -14,6 +14,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Platform, Text } from "react-native";
 import { SafeArea } from "./src/utility/safe-area.component";
 import { Ionicons } from "@expo/vector-icons";
+import { RestaurantsContextProvider } from "./src/services/restaurants/restaurants.context";
 
 const Setting = () => (
   <SafeArea>
@@ -71,13 +72,15 @@ export default function App() {
     isLatoLoaded && (
       <>
         <ThemeProvider theme={theme}>
-          <NavigationContainer>
-            <Tab.Navigator screenOptions={screenOptions}>
-              <Tab.Screen name="Restaurants" component={RestaurantScreen} />
-              <Tab.Screen name="Map" component={Map} />
-              <Tab.Screen name="Settings" component={Setting} />
-            </Tab.Navigator>
-          </NavigationContainer>
+          <RestaurantsContextProvider>
+            <NavigationContainer>
+              <Tab.Navigator screenOptions={screenOptions}>
+                <Tab.Screen name="Restaurants" component={RestaurantScreen} />
+                <Tab.Screen name="Map" component={Map} />
+                <Tab.Screen name="Settings" component={Setting} />
+              </Tab.Navigator>
+            </NavigationContainer>
+          </RestaurantsContextProvider>
         </ThemeProvider>
         <ExpoStatusBar style="light" />
       </>
