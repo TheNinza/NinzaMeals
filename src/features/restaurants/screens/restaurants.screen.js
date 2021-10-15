@@ -1,16 +1,13 @@
 import React, { useContext } from "react";
 
-import { FlatList } from "react-native";
-import { ActivityIndicator, Colors, Searchbar } from "react-native-paper";
+import { FlatList, Text } from "react-native";
+import { ActivityIndicator, Colors } from "react-native-paper";
 import styled from "styled-components/native";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { RestaurantsContext } from "../../../services/restaurants/restaurants.context";
 import { SafeArea } from "../../../utility/safe-area.component";
 import { RestaurantInfoCard } from "../components/restaurant-info-card.component";
-
-const SearchContainer = styled.View`
-  padding: ${(props) => props.theme.space[3]};
-`;
+import { Search } from "../components/search.component";
 
 const RestaurantList = styled(FlatList).attrs({
   contentContainerStyle: {
@@ -26,8 +23,8 @@ const LoadingContainer = styled.View`
 `;
 
 export const RestaurantScreen = () => {
-  const { restaurants, error, isLoading } = useContext(RestaurantsContext);
-  console.log(error, isLoading);
+  const { restaurants, isLoading, error } = useContext(RestaurantsContext);
+  console.log(error);
   return (
     <SafeArea>
       {isLoading && (
@@ -39,19 +36,20 @@ export const RestaurantScreen = () => {
           />
         </LoadingContainer>
       )}
-      <SearchContainer>
-        <Searchbar />
-      </SearchContainer>
+      <Search />
+      {!isLoading && !error && (
+        <RestaurantList
+          data={restaurants}
+          renderItem={({ item }) => (
+            <Spacer position="bottom" size="large">
+              <RestaurantInfoCard restaurant={item} />
+            </Spacer>
+          )}
+          keyExtractor={(item) => item.name}
+        />
+      )}
 
-      <RestaurantList
-        data={restaurants}
-        renderItem={({ item }) => (
-          <Spacer position="bottom" size="large">
-            <RestaurantInfoCard restaurant={item} />
-          </Spacer>
-        )}
-        keyExtractor={(item) => item.name}
-      />
+      {error && <Text>Some Error Occured</Text>}
     </SafeArea>
   );
 };
